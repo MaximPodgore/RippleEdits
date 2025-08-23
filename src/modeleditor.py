@@ -119,3 +119,15 @@ class MENDModelEditor(RomeStyleModelEditor):
 
         sys.path.remove('..')
         os.chdir('../..')
+
+class GraphEditor(ModelEditor):
+    def __init__(self, query_executor):
+        super().__init__(query_executor)
+
+    def edit_model(self, fact):
+        context =  fact.get_fact_phrased()
+        print(f'Simply adding text to graph: {context}')
+        self._query_executor._add_text(context)
+
+
+

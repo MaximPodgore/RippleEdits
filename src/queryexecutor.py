@@ -1,7 +1,7 @@
 import torch
 from transformers import AutoTokenizer, GPT2LMHeadModel, GPTJForCausalLM, GPTNeoXForCausalLM, LlamaForCausalLM
 from utils import call_openai, process_generation
-
+import requests
 
 class QueryExecutor:
 
@@ -145,3 +145,24 @@ class GPT3QueryExecutor(QueryExecutor):
         )
         text = f'{prompt} {process_generation(text)}'
         return text
+
+class SingularityNetExecutor(QueryExecutor):
+
+    def __init__(self, base_url = "http://0.0.0:8000"):
+        self.base_url = base_url
+        super().__init__(send_to_device=False)
+
+    def _get_response(self, prompt):
+        response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
+            "question": prompt,
+            "context_only": False
+        })
+        text = response.json()['answer']
+        return text
+
+    def _add_text(self, text):
+        response = requests.post(f"{self.base_url}/data/add_text", json={
+            "content": text,
+            "username": "admin"
+        })
+        return response.json()

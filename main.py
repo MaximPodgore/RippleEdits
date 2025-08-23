@@ -1,11 +1,11 @@
 from collections import defaultdict
 
 from src.evaluation import Evaluator
-# need to extend query executor
-from src.queryexecutor import QueryExecutor
-from src.benchmark import Dataset, Example, TestsAxis
-from src.testrunner import ExampleResult, TestRunner, TestResult
+from src.modeleditor import GraphEditor
+from src.queryexecutor import SingularityNetExecutor
+from src.benchmark import Dataset, TestsAxis
 from src.wikidata.utils import write_json
+import requests
 
 recently_modified_path = './data/benchmark/recent.json'
 fake_facts_path = './data/benchmark/random.json'
@@ -19,6 +19,13 @@ datasets = [
 
 
 #TODO: load datasets into graphRAG
+#turn all 3 into text files
+base_url = 'http://0.0.0:8000'
+resp = requests.post(base_url + '/data/add_text', json=
+    {'content': datasets,
+     'username': 'admin'})
+
+print(resp.json())
 
 for dataset_path in datasets:
     if dataset_path == recently_modified_path:
@@ -31,9 +38,9 @@ for dataset_path in datasets:
     experiment_name = f'graph_{dataset_name}'
     print(experiment_name)
 
-
-    #TODO: need to initialize query executor and graph editor
-    evaluator = Evaluator(query_executor='graph-executor', model_editor='graph-editor')
+    graph_query_executor = SingularityNetExecutor(base_url=base_url)
+    graph_editor = GraphEditor(query_executor=graph_query_executor)
+    evaluator = Evaluator(query_executor=graph_query_executor, model_editor=graph_editor)
     dataset = Dataset.from_file(dataset_path)
 
     precisions_json = dict()
