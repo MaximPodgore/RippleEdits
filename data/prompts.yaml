@@ -1,0 +1,10 @@
+prompts:
+  fact-known:
+    prompt: |
+      Is this the fact below consistent with and known in the knowledge base? Answer with "Yes" or "No".
+      {fact}
+
+  fact-unknown:
+    prompt: |
+      Is this the fact below consistent with the knowledge base? Answer with "Yes" or "No".
+      {fact}

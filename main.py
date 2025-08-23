@@ -6,6 +6,7 @@ from src.queryexecutor import SingularityNetExecutor
 from src.benchmark import Dataset, TestsAxis
 from src.wikidata.utils import write_json
 import requests
+import json
 
 recently_modified_path = './data/benchmark/recent.json'
 fake_facts_path = './data/benchmark/random.json'
@@ -18,14 +19,29 @@ datasets = [
 ]
 
 
-#TODO: load datasets into graphRAG
-#turn all 3 into text files
+# load it into the graphRAG system
+random_prompts_path = './data/benchmark/random_prompts.json'
+popular_prompts_path = './data/benchmark/popular_prompts.json'
+
+with open(random_prompts_path, "r", encoding="utf-8") as f:
+    random_prompts = json.load(f)
+    random_prompts_txt = "\n".join(random_prompts)
+
+with open(popular_prompts_path, "r", encoding="utf-8") as f:
+    popular_prompts = json.load(f)
+    popular_prompts_txt = "\n".join(popular_prompts)
+
 base_url = 'http://0.0.0:8000'
 resp = requests.post(base_url + '/data/add_text', json=
     {'content': datasets,
      'username': 'admin'})
-
 print(resp.json())
+resp = requests.post(base_url + '/data/graph/update')
+print(resp.json())
+
+#TODO: mine the triplets 
+
+
 
 for dataset_path in datasets:
     if dataset_path == recently_modified_path:
