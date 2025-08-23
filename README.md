@@ -4,12 +4,14 @@ This repository contains the official code of the paper: ["Evaluating the Ripple
 
 ## Setup
 
-The benchmark creation and all experiments and evaluations were conducted in a Python 3.9 environment.
 To clone the repository and set up the environment, please run the following commands:
 ```shell
 git clone https://github.com/edenbiran/RippleEdits.git
 cd RippleEdits
+conda create -n "rippleBenchmark" python==3.9
+conda activate rippleBenchmark
 pip install -r requirements.txt
+pip install torch==2.0.1+cu118 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
 ## RippleEdits Benchmark
