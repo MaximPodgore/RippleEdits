@@ -152,6 +152,9 @@ class SingularityNetExecutor(QueryExecutor):
         self.base_url = base_url
         super().__init__(send_to_device=False)
 
+    def get_model_name(self):
+        return "SingularityNet"
+
     def _get_response(self, prompt):
         response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
             "question": prompt,
