@@ -155,7 +155,18 @@ class SingularityNetExecutor(QueryExecutor):
     def get_model_name(self):
         return "SingularityNet"
 
+    def _generate_text(self, prompt, length):
+        response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
+            "question": prompt,
+            "context_only": False
+        })
+        text = response.json()['answer']
+        return text
+
+
     def _get_response(self, prompt):
+        """I use this when I want to get a response from SNET, and is often used outside of the regular
+        OOP inheritance"""
         response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
             "question": prompt,
             "context_only": False
