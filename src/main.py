@@ -1,10 +1,10 @@
 from collections import defaultdict
 
-from src.evaluation import Evaluator
-from src.modeleditor import GraphEditor
-from src.queryexecutor import SingularityNetExecutor
-from src.benchmark import Dataset, TestsAxis
-from src.wikidata.utils import write_json
+from evaluation import Evaluator
+from modeleditor import GraphEditor
+from queryexecutor import SingularityNetExecutor
+from benchmark import Dataset, TestsAxis
+from wikidata.utils import write_json
 import requests
 import json
 
@@ -33,9 +33,15 @@ with open(popular_prompts_path, "r", encoding="utf-8") as f:
 
 base_url = 'http://0.0.0:8000'
 resp = requests.post(base_url + '/data/add_text', json=
-    {'content': datasets,
+    {'content': random_prompts_txt,
      'username': 'admin'})
 print(resp.json())
+
+resp = requests.post(base_url + '/data/add_text', json=
+    {'content': popular_prompts_txt,
+     'username': 'admin'})
+print(resp.json())
+
 resp = requests.post(base_url + '/data/graph/update')
 print(resp.json())
 
