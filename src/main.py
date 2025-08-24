@@ -8,9 +8,9 @@ from wikidata.utils import write_json
 import requests
 import json
 
-recently_modified_path = './data/benchmark/recent.json'
-fake_facts_path = './data/benchmark/random.json'
-top_views_path = './data/benchmark/popular.json'
+recently_modified_path = '../data/benchmark/recent.json'
+fake_facts_path = '../data/benchmark/random.json'
+top_views_path = '../data/benchmark/popular.json'
 
 datasets = [
     recently_modified_path,
@@ -20,8 +20,8 @@ datasets = [
 
 
 # load it into the graphRAG system
-random_prompts_path = './data/benchmark/random_prompts.json'
-popular_prompts_path = './data/benchmark/popular_prompts.json'
+random_prompts_path = '../data/benchmark/random_prompts.json'
+popular_prompts_path = '../data/benchmark/popular_prompts.json'
 
 with open(random_prompts_path, "r", encoding="utf-8") as f:
     random_prompts = json.load(f)
