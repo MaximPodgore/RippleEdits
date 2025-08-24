@@ -23,10 +23,10 @@ class TestRunner:
     def __init__(self, query_executor, model_editor, graph: bool = False):
         self._query_executor = query_executor
         self._model_editor = model_editor
-        self._prompt_manager = PromptManager("./data/prompts.yaml")
+        self._prompt_manager = PromptManager("../data/prompts.yaml")
         self._graph = graph
 
-    def run_testcases(self, example, test_cases, skip_edit=False, skip_restore=False, skip_preconditions=False):
+    def run_testcases(self, example, test_cases, skip_edit=False, skip_restore=True, skip_preconditions=False):
         example_result = ExampleResult.EXECUTED
         test_results = {TestResult.NOT_EXECUTED: [], TestResult.PASSED: [], TestResult.FAILED: []}
 

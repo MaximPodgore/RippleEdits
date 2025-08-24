@@ -160,7 +160,8 @@ class SingularityNetExecutor(QueryExecutor):
             "question": prompt,
             "context_only": False
         })
-        text = response.json()['answer']
+        #print(response.json())
+        text = response.json()['result']
         return text
 
 
@@ -171,7 +172,8 @@ class SingularityNetExecutor(QueryExecutor):
             "question": prompt,
             "context_only": False
         })
-        text = response.json()['answer']
+        #print(response.json())
+        text = response.json()['result']
         return text
 
     def _add_text(self, text):
