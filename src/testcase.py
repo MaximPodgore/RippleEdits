@@ -33,7 +33,7 @@ class TestCase:
         }
 
     @staticmethod
-    def from_dict(d):
+    def from_dict(d, use_labels=False):
         tests = [Query.from_dict(test) for test in d['test_queries']]
         test_condition = d['test_condition']
         conditions = [Query.from_dict(condition) for condition in d['condition_queries']]

@@ -12,6 +12,10 @@ recently_modified_path = '../data/benchmark/recent.json'
 fake_facts_path = '../data/benchmark/random.json'
 top_views_path = '../data/benchmark/popular.json'
 
+# Add this configuration flag to control whether to use human-readable labels or IDs
+# Useful because that's what the system actually responds with, otherwise tests fail
+USE_LABELS = True  # Set to True to use human-readable labels, False for IDs
+
 datasets = [
     recently_modified_path,
     fake_facts_path,
@@ -63,7 +67,7 @@ for dataset_path in datasets:
     graph_query_executor = SingularityNetExecutor(base_url=base_url)
     graph_editor = GraphEditor(query_executor=graph_query_executor)
     evaluator = Evaluator(query_executor=graph_query_executor, model_editor=graph_editor)
-    dataset = Dataset.from_file(dataset_path)
+    dataset = Dataset.from_file(dataset_path, use_labels=USE_LABELS)
 
     precisions_json = dict()
     num_of_examples = 200

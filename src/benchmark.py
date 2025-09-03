@@ -47,16 +47,16 @@ class Example:
         }
 
     @staticmethod
-    def from_dict(d):
-        fact = Fact.from_dict(d['edit'])
-        making_up_tests = [TestCase.from_dict(test) for test in d['Relation_Specificity']]
-        logical_constraints = [TestCase.from_dict(test) for test in d['Logical_Generalization']]
-        subject_paraphrasing_tests = [TestCase.from_dict(test) for test in d['Subject_Aliasing']]
-        two_hop_tests = [TestCase.from_dict(test) for test in d['Compositionality_I']]
-        forward_two_hop_tests = [TestCase.from_dict(test) for test in d['Compositionality_II']]
-        prev_storage_tests = [TestCase.from_dict(test) for test in d['Forgetfulness']]
+    def from_dict(d, use_labels=False):
+        fact = Fact.from_dict(d['edit'], use_labels)
+        making_up_tests = [TestCase.from_dict(test, use_labels) for test in d['Relation_Specificity']]
+        logical_constraints = [TestCase.from_dict(test, use_labels) for test in d['Logical_Generalization']]
+        subject_paraphrasing_tests = [TestCase.from_dict(test, use_labels) for test in d['Subject_Aliasing']]
+        two_hop_tests = [TestCase.from_dict(test, use_labels) for test in d['Compositionality_I']]
+        forward_two_hop_tests = [TestCase.from_dict(test, use_labels) for test in d['Compositionality_II']]
+        prev_storage_tests = [TestCase.from_dict(test, use_labels) for test in d['Forgetfulness']]
         if d['example_type'] in ['random', 'popular']:
-            previous_fact = Fact.from_dict(d['edit']['original_fact'])
+            previous_fact = Fact.from_dict(d['edit']['original_fact'], use_labels)
             return CounterFactualExample(fact, previous_fact, making_up_tests, logical_constraints,
                                          subject_paraphrasing_tests, two_hop_tests, forward_two_hop_tests, prev_storage_tests)
         elif d['example_type'] == 'recent':
@@ -170,7 +170,7 @@ class Dataset:
             json.dump(d, f, ensure_ascii=False, indent=2)
 
     @staticmethod
-    def from_file(filename):
+    def from_file(filename, use_labels=False):
         with open(filename, 'r', encoding='utf-8') as f:
             examples = json.load(f)
-        return Dataset([Example.from_dict(example) for example in examples])
+        return Dataset([Example.from_dict(example, use_labels) for example in examples])
