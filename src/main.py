@@ -23,7 +23,8 @@ datasets = [
 ]
 
 
-# load it into the graphRAG system
+# load it into the graphRAG system, takes a while so normally do it in a diff file or use a wait function
+'''
 random_prompts_path = '../data/benchmark/random_prompts.json'
 popular_prompts_path = '../data/benchmark/popular_prompts.json'
 
@@ -48,6 +49,7 @@ print(resp.json())
 
 resp = requests.post(base_url + '/data/graph/update')
 print(resp.json())
+'''
 
 #TODO: mine the triplets 
 
