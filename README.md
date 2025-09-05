@@ -1,4 +1,4 @@
-# Evaluating the Ripple Effects of Knowledge Editing in Language Models
+# Evaluating the Ripple Effects of Knowledge Editing in RAG systems
 
 This repository contains code from the paper: ["Evaluating the Ripple Effects of Knowledge Editing in Language Models"](https://arxiv.org/abs/2307.12976), which has now been extended to allow for benchmarking of RAG systems
 
