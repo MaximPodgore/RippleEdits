@@ -148,37 +148,56 @@ class GPT3QueryExecutor(QueryExecutor):
 
 class SingularityNetExecutor(QueryExecutor):
 
-    def __init__(self, base_url = "http://0.0.0:8000"):
+    def __init__(self, base_url: str = "http://0.0.0:8000", db_name: str = "test"):
+        """Initialize executor.
+
+        Parameters:
+        - base_url: Base URL of the SingularityNet service.
+        - db_name: Name of the database / graph to target (new API endpoints).
+        """
         self.base_url = base_url
+        self.db_name = db_name
         super().__init__(send_to_device=False)
 
     def get_model_name(self):
         return "SingularityNet"
 
     def _generate_text(self, prompt, length):
-        response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
-            "question": prompt,
-            "context_only": False
-        })
-        #print(response.json())
+        response = requests.post(
+            f"{self.base_url}/query/advanced/local_search?graph_name={self.db_name}",
+            json={
+                "question": prompt,
+                "context_only": False
+            }
+        )
         text = response.json()['result']
         return text
 
-
     def _get_response(self, prompt):
-        """I use this when I want to get a response from SNET, and is often used outside of the regular
-        OOP inheritance"""
-        response = requests.post(f"{self.base_url}/query/advanced/local_search", json={
-            "question": prompt,
-            "context_only": False
-        })
-        #print(response.json())
+        """Get a response from SingularityNet without going through higher-level query flow."""
+        response = requests.post(
+            f"{self.base_url}/query/advanced/local_search?graph_name={self.db_name}",
+            json={
+                "question": prompt,
+                "context_only": False
+            }
+        )
         text = response.json()['result']
         return text
 
     def _add_text(self, text):
-        response = requests.post(f"{self.base_url}/data/add_text", json={
-            "content": text,
-            "username": "admin"
-        })
+        response = requests.post(
+            f"{self.base_url}/data/add_text",
+            json={
+                "content": text,
+                "username": "admin",
+                "db_name": self.db_name
+            }
+        )
+
+        # now update the graph with the new text
+        response_two = requests.post(
+            f"{self.base_url}/data/graph/update?db_name={self.db_name}"
+        )
+        
         return response.json()

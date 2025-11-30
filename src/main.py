@@ -24,6 +24,8 @@ datasets = [
 
 
 # load it into the graphRAG system, takes a while so normally do it in a diff file or use a wait function
+base_url = 'http://0.0.0:8000'
+db_name = 'test'
 '''
 random_prompts_path = '../data/benchmark/random_prompts.json'
 popular_prompts_path = '../data/benchmark/popular_prompts.json'
@@ -36,7 +38,7 @@ with open(popular_prompts_path, "r", encoding="utf-8") as f:
     popular_prompts = json.load(f)
     popular_prompts_txt = "\n".join(popular_prompts)
 
-base_url = 'http://0.0.0:8000'
+
 resp = requests.post(base_url + '/data/add_text', json=
     {'content': random_prompts_txt,
      'username': 'admin'})
@@ -66,7 +68,7 @@ for dataset_path in datasets:
     experiment_name = f'graph_{dataset_name}'
     print(experiment_name)
 
-    graph_query_executor = SingularityNetExecutor(base_url=base_url)
+    graph_query_executor = SingularityNetExecutor(base_url=base_url, db_name=db_name)
     graph_editor = GraphEditor(query_executor=graph_query_executor)
     evaluator = Evaluator(query_executor=graph_query_executor, model_editor=graph_editor)
     dataset = Dataset.from_file(dataset_path, use_labels=USE_LABELS)

@@ -128,6 +128,7 @@ class GraphEditor(ModelEditor):
         context =  fact.get_fact_phrased()
         print(f'Simply adding text to graph: {context}')
         self._query_executor._add_text(context)
+        #TODO: might need to await here depending on how long small updates take
 
 
 
