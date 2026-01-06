@@ -7,6 +7,7 @@ from qwikidata.linked_data_interface import get_entity_dict_from_api
 from qwikidata.entity import WikidataItem
 from qwikidata.sparql import return_sparql_query_results
 import zipfile
+import requests
 
 
 def load_json(path: str):
@@ -73,7 +74,8 @@ def facts_list_to_relation2targets(facts: list):
 def wikidata_item_given_id(ent_id: str):
     try:
         return WikidataItem(get_entity_dict_from_api(ent_id))
-    except:
+    except Exception as e:
+        print(f"Failed to fetch Wikidata item for {ent_id}: {e}")
         return None
 
 
@@ -85,14 +87,43 @@ def get_label(ent_id: str):
             return ent_id
     if ent_id[0] != 'Q':
         return ent_id
-    item = wikidata_item_given_id(ent_id)
-    if item is not None:
-        label = item.get_label()
-    else:
-        return ent_id
-    if label is None:
-        return ent_id
-    return label
+    # Try local offline mapping first
+    local_label = ent_id2label_dict.get(ent_id)
+    if local_label:
+        return local_label
+    # Use direct Wikidata HTTP API with proper User-Agent (old lib method was failing )
+    label = _fetch_label_via_http(ent_id)
+    if label is not None:
+        print(f"Fetched label via HTTP for {ent_id}: {label}")
+        return label
+
+    return ent_id
+
+
+def _fetch_label_via_http(ent_id: str, lang: str = "en"):
+    try:
+        url = f"https://www.wikidata.org/wiki/Special:EntityData/{ent_id}.json"
+        headers = {
+            "User-Agent": "RippleEdits/0.1 (https://github.com/edenbiran/RippleEdits)"
+        }
+        resp = requests.get(url, headers=headers, timeout=10)
+        if resp.status_code != 200:
+            print(f"Fallback label fetch failed for {ent_id}: {resp.status_code} {resp.text[:200]}")
+            return None
+        data = resp.json()
+        entity = data.get("entities", {}).get(ent_id, {})
+        labels = entity.get("labels", {})
+        if lang in labels and "value" in labels[lang]:
+            return labels[lang]["value"]
+        # If preferred language not present, return any available label
+        for entry in labels.values():
+            val = entry.get("value")
+            if val:
+                return val
+        return None
+    except Exception as e:
+        print(f"Fallback label fetch error for {ent_id}: {e}")
+        return None
 
 
 def get_aliases(ent_id: str):
@@ -162,6 +193,12 @@ with zipfile.ZipFile('./wikidata/ent_label2id.json.zip', 'r') as zip_ref:
     zip_ref.extractall('./wikidata/')
 
 ent_label2id_dict = load_json('./wikidata/ent_label2id.json')
+
+# Build id->label dictionary for offline fallback
+ent_id2label_dict = {}
+for label, qid in ent_label2id_dict.items():
+    if qid not in ent_id2label_dict:
+        ent_id2label_dict[qid] = label
 
 
 def ent_label2id(label: str):
