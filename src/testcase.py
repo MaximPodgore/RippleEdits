@@ -34,9 +34,10 @@ class TestCase:
 
     @staticmethod
     def from_dict(d, use_labels=False):
-        tests = [Query.from_dict(test) for test in d['test_queries']]
+        # Ensure queries honor the dataset-level use_labels flag by injecting it
+        tests = [Query.from_dict({**test, 'use_labels': use_labels}) for test in d['test_queries']]
         test_condition = d['test_condition']
-        conditions = [Query.from_dict(condition) for condition in d['condition_queries']]
+        conditions = [Query.from_dict({**condition, 'use_labels': use_labels}) for condition in d['condition_queries']]
         return TestCase(tests, conditions, test_condition)
 
     def __str__(self):

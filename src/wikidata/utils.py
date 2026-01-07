@@ -127,10 +127,51 @@ def _fetch_label_via_http(ent_id: str, lang: str = "en"):
 
 
 def get_aliases(ent_id: str):
+    # Prefer direct HTTP fetch with a proper User-Agent to avoid 403
+    aliases = _fetch_aliases_via_http(ent_id)
+    if aliases is not None and len(aliases) > 0:
+        return aliases
+    # Fallback to qwikidata if HTTP fails
     item = wikidata_item_given_id(ent_id)
     if item is not None:
-        return item.get_aliases()
+        try:
+            return item.get_aliases()
+        except Exception:
+            pass
     return [ent_id]
+
+
+def _fetch_aliases_via_http(ent_id: str, lang: str = "en"):
+    try:
+        if not isinstance(ent_id, str) or not ent_id.startswith("Q"):
+            return []
+        url = f"https://www.wikidata.org/wiki/Special:EntityData/{ent_id}.json"
+        headers = {
+            "User-Agent": "RippleEdits/0.1 (https://github.com/edenbiran/RippleEdits)"
+        }
+        resp = requests.get(url, headers=headers, timeout=10)
+        if resp.status_code != 200:
+            # Non-200; let caller try fallback
+            return None
+        data = resp.json()
+        entity = data.get("entities", {}).get(ent_id, {})
+        aliases_by_lang = entity.get("aliases", {})
+        results = []
+        if lang in aliases_by_lang:
+            for entry in aliases_by_lang[lang]:
+                val = entry.get("value")
+                if val:
+                    results.append(val)
+        # If no aliases for preferred language, collect any available
+        if not results:
+            for lang_entries in aliases_by_lang.values():
+                for entry in lang_entries:
+                    val = entry.get("value")
+                    if val:
+                        results.append(val)
+        return results or None
+    except Exception:
+        return None
 
 
 def get_description(ent_id: str):
