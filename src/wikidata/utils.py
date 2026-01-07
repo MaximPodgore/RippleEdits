@@ -94,7 +94,6 @@ def get_label(ent_id: str):
     # Use direct Wikidata HTTP API with proper User-Agent (old lib method was failing )
     label = _fetch_label_via_http(ent_id)
     if label is not None:
-        print(f"Fetched label via HTTP for {ent_id}: {label}")
         return label
 
     return ent_id

@@ -16,7 +16,7 @@ class Evaluator:
         self._model_editor = model_editor
         self._test_runner = TestRunner(query_executor, model_editor)
 
-    def average_acc(self, example: Example, test_cases: list, skip_edit: bool = False, skip_restore: bool = False):
+    def average_acc(self, example: Example, test_cases: list, skip_edit: bool = False, skip_restore: bool = True):
         if not len(test_cases) and skip_edit:
             return 0.0, 0.0, 0.0, False
 

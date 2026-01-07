@@ -170,6 +170,8 @@ class SingularityNetExecutor(QueryExecutor):
                 "context_only": False
             }
         )
+        resp = response.json()
+        print(f"SingularityNet response: {resp}")
         text = response.json()['result']
         return text
 
@@ -194,10 +196,20 @@ class SingularityNetExecutor(QueryExecutor):
                 "db_name": self.db_name
             }
         )
+        
 
         # now update the graph with the new text
-        response_two = requests.post(
+        response = requests.post(
             f"{self.base_url}/data/graph/update?db_name={self.db_name}"
         )
+
+        response = requests.get(self.base_url + f'/data/graph/status?db_name={self.db_name}')
+        status = response.json()['status']
+        while status != "Graph update is not running":
+            print(f"Graph update status: {status}, waiting...")
+            import time
+            time.sleep(1)
+            response = requests.get(self.base_url + f'/data/graph/status?db_name={self.db_name}')
+            status = response.json()['status']
         
         return response.json()
