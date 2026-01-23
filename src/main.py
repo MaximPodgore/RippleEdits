@@ -8,62 +8,28 @@ from wikidata.utils import write_json
 import requests
 import json
 
-recently_modified_path = '../data/benchmark/recent.json'
 fake_facts_path = '../data/benchmark/random.json'
-top_views_path = '../data/benchmark/popular.json'
+popular_path = '../data/benchmark/popular.json'
 
 # Add this configuration flag to control whether to use human-readable labels or IDs
 # Useful because that's what the system actually responds with, otherwise tests fail
 USE_LABELS = True  # Set to True to use human-readable labels, False for IDs
 
 datasets = [
-    recently_modified_path,
     fake_facts_path,
-    top_views_path
+    popular_path
 ]
 
 
 # load it into the graphRAG system, takes a while so normally do it in a diff file or use a wait function
 base_url = 'http://0.0.0:8000'
 db_name = 'test'
-'''
-random_prompts_path = '../data/benchmark/random_prompts.json'
-popular_prompts_path = '../data/benchmark/popular_prompts.json'
-
-with open(random_prompts_path, "r", encoding="utf-8") as f:
-    random_prompts = json.load(f)
-    random_prompts_txt = "\n".join(random_prompts)
-
-with open(popular_prompts_path, "r", encoding="utf-8") as f:
-    popular_prompts = json.load(f)
-    popular_prompts_txt = "\n".join(popular_prompts)
-
-
-resp = requests.post(base_url + '/data/add_text', json=
-    {'content': random_prompts_txt,
-     'username': 'admin'})
-print(resp.json())
-
-resp = requests.post(base_url + '/data/add_text', json=
-    {'content': popular_prompts_txt,
-     'username': 'admin'})
-print(resp.json())
-
-resp = requests.post(base_url + '/data/graph/update')
-print(resp.json())
-'''
-
 #TODO: mine the triplets 
-
-
-
 for dataset_path in datasets:
-    if dataset_path == recently_modified_path:
-        dataset_name = 'recently_modified'
     if dataset_path == fake_facts_path:
         dataset_name = 'fake_facts'
-    if dataset_path == top_views_path:
-        dataset_name = 'top_views'
+    if dataset_path == popular_path:
+        dataset_name = 'popular'
     
     experiment_name = f'graph_{dataset_name}'
     print(experiment_name)
