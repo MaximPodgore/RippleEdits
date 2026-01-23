@@ -4,9 +4,8 @@ This repository contains code from the paper: ["Evaluating the Ripple Effects of
 
 ## Running locally
 
-To clone the repository and set up the environment, please run the following commands:
+Clone the repo and then run the following commands:
 ```shell
-git clone https://github.com/edenbiran/RippleEdits.git
 cd RippleEdits
 conda create -n "rippleBenchmark" python==3.9
 conda activate rippleBenchmark
