@@ -2,6 +2,14 @@
 
 This repository contains code from the paper: ["Evaluating the Ripple Effects of Knowledge Editing in Language Models"](https://arxiv.org/abs/2307.12976), which has now been extended to allow for benchmarking of RAG systems
 
+## Change Notes
+
+Previously, the benchmarker used id's instead of labels for feeding data and answering questions. I think that's nonoptimal, so I changed the incoming data and modified the system to convert id's to labels when asking the test questions.
+
+I added an SNET query executor and model editor. I updated the get_label function since the wikidata package's function stopped working.
+
+Aside from that, I just added a `main.py` and `setup.ipynb` so that running the benchmarker for SNET's GraphRAG is easy.
+
 ## Running locally
 
 Clone the repo and then run the following commands:
